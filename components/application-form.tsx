@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, LoaderCircle, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,6 +22,12 @@ export function ApplicationForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [step, setStep] = useState(1);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const submitLock = useRef(false);
+
+  useEffect(() => {
+    setAlreadySubmitted(window.localStorage.getItem("oligarchydao_application_submitted") === "1");
+  }, []);
 
   useEffect(() => {
     const context = (document as Document & { modelContext?: { registerTool?: (tool: unknown, options?: { signal?: AbortSignal }) => unknown } }).modelContext;
@@ -35,15 +41,17 @@ export function ApplicationForm() {
 
   const update = <K extends keyof ApplicationPayload>(key: K, value: ApplicationPayload[K]) => setForm((current) => ({ ...current, [key]: value }));
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setStatus("sending"); setMessage("");
-    try { await submitApplication(form); setForm(initialForm); setStatus("success"); }
-    catch (error) { setStatus("error"); setMessage(error instanceof Error ? error.message : "Please try again."); }
+    event.preventDefault();
+    if (submitLock.current || alreadySubmitted) return;
+    submitLock.current = true; setStatus("sending"); setMessage("");
+    try { await submitApplication(form); window.localStorage.setItem("oligarchydao_application_submitted", "1"); setAlreadySubmitted(true); setForm(initialForm); setStatus("success"); }
+    catch (error) { submitLock.current = false; setStatus("error"); setMessage(error instanceof Error ? error.message : "Please try again."); }
   }
 
   const identityReady = Boolean(form.name.trim().length >= 2 && form.email.includes("@") && form.xUsername.trim() && form.discordUsername.trim());
   const storyReady = form.contribution.trim().length >= 3 && form.reason.trim().length >= 20;
 
-  if (status === "success") return <div className="flex h-full min-h-0 flex-col items-center justify-center px-2 text-center sm:min-h-[520px]" aria-live="polite"><div className="mb-5 grid size-16 place-items-center rounded-full bg-[#c80000] text-white sm:mb-6 sm:size-20"><Check className="size-8 sm:size-9" /></div><h3 className="font-display text-3xl font-black uppercase tracking-[-0.04em] sm:text-4xl">Request received.</h3><p className="mt-3 max-w-sm text-sm leading-relaxed text-black/60 sm:mt-4 sm:text-base">Your application has been saved. The OligarchyDAO team will review it and contact approved applicants with Discord access.</p><Button type="button" variant="outline" onClick={() => { setStatus("idle"); setStep(1); }} className="mt-6 h-11 rounded-full px-6 sm:mt-8 sm:h-12">Submit another entry</Button></div>;
+  if (status === "success" || alreadySubmitted) return <div className="flex h-full min-h-0 flex-col items-center justify-center px-2 text-center sm:min-h-[520px]" aria-live="polite"><div className="mb-5 grid size-16 place-items-center rounded-full bg-[#c80000] text-white sm:mb-6 sm:size-20"><Check className="size-8 sm:size-9" /></div><h3 className="font-display text-3xl font-black uppercase tracking-[-0.04em] sm:text-4xl">Request received.</h3><p className="mt-3 max-w-sm text-sm leading-relaxed text-black/60 sm:mt-4 sm:text-base">Your application has been saved. Only one application is accepted per person. The OligarchyDAO team will contact approved applicants with Discord access.</p></div>;
 
   return <form noValidate onSubmit={onSubmit} className="flex h-full min-h-0 flex-col sm:block sm:space-y-7">
     <div className="mb-4 flex items-center justify-between sm:hidden">
