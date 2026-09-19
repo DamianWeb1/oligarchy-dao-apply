@@ -16,7 +16,7 @@ export default function Home() {
       <section id="top" className="relative z-10 mx-auto grid h-[calc(100dvh-72px)] w-full max-w-[1440px] px-3 pb-3 lg:h-auto lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 lg:px-12 lg:pb-24 lg:pt-12">
         <div className="hidden flex-col justify-between lg:flex lg:min-h-[760px]">
           <div>
-            <div className="mb-8 flex items-center gap-3"><span className="h-px w-10 bg-[#c80000]" /><span className="text-xs font-black uppercase tracking-[0.24em] text-[#c80000]">Membership applications open</span></div>
+            <div className="mb-8 flex items-center gap-3"><span className="h-px w-10 bg-[#c80000]" /><span className="text-xs font-black uppercase tracking-[0.24em] text-[#c80000]">Membership applications closed</span></div>
             <h1 className="font-display max-w-[680px] text-[clamp(3.5rem,5.4vw,5.8rem)] font-black uppercase leading-[0.94] tracking-[-0.035em]">
               <span className="block">Small circle.</span>
               <span className="block"><span className="text-[#c80000]">Serious</span> people.</span>
@@ -34,13 +34,13 @@ export default function Home() {
           <div className="relative h-full rounded-[1.5rem] border border-black/10 bg-[#181512] p-2 shadow-[0_30px_90px_rgba(42,17,8,0.22)] lg:h-auto lg:rounded-[2rem] lg:p-4">
             <div className="flex h-full min-h-0 flex-col rounded-[1.1rem] bg-[#fffdf8] p-4 lg:h-auto lg:rounded-[1.45rem] lg:p-10">
               <div className="mb-4 flex shrink-0 items-start justify-between gap-5 border-b border-black/10 pb-4 lg:mb-8 lg:pb-7">
-                <div><p className="mb-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#c80000] lg:mb-2 lg:text-xs">Apply to join</p><h2 className="font-display text-2xl font-black uppercase tracking-[-0.04em] lg:text-4xl">Tell us about you.</h2></div>
+                <div><p className="mb-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#c80000] lg:mb-2 lg:text-xs">Membership update</p><h2 className="font-display text-2xl font-black uppercase tracking-[-0.04em] lg:text-4xl">Applications closed.</h2></div>
                 <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c80000] font-display text-lg font-black text-white lg:size-11 lg:text-xl">O</span>
               </div>
               <div className="min-h-0 flex-1"><ApplicationForm /></div>
             </div>
           </div>
-          <p className="mt-4 hidden text-center text-xs font-semibold text-black/45 lg:block">Applications are reviewed before Discord access is shared.</p>
+          <p className="mt-4 hidden text-center text-xs font-semibold text-black/45 lg:block">Submitted applications are now under review.</p>
         </div>
       </section>
     </main>
